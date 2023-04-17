@@ -1,19 +1,16 @@
 # python3
 
 def read_input():
-    input_type = input().strip().upper()
-    
+    input_type = input("Enter the input type (I/F): ").strip().upper()
 
     if input_type == 'I':
-        values = (input().rstrip(), input().rstrip())
-        
+        values = (input("Enter the pattern: ").rstrip(), input("Enter the text: ").rstrip())
         return values
     elif input_type == 'F':
         file_path = input("Enter the file path: ").strip()
         with open(file_path, 'r') as file:
             pattern = file.readline().rstrip()
             text = file.readline().rstrip()
-            
             return pattern, text
     else:
         print("Invalid input type.")
