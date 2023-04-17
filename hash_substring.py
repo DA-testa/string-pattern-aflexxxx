@@ -1,32 +1,58 @@
 # python3
 
 def read_input():
-    # this function needs to aquire input both from keyboard and file
-    # as before, use capital i (input from keyboard) and capital f (input from file) to choose which input type will follow
-    
-    
-    # after input type choice
-    # read two lines 
-    # first line is pattern 
-    # second line is text in which to look for pattern 
-    
-    # return both lines in one return
-    
-    # this is the sample return, notice the rstrip function
-    return (input().rstrip(), input().rstrip())
+    input_type = input("Enter 'I' for input from keyboard or 'F' for input from file: ").strip().upper()
+
+    if input_type == 'I':
+        return (input().rstrip(), input().rstrip())
+    elif input_type == 'F':
+        file_path = input("Enter the file path: ").strip()
+        with open(file_path, 'r') as file:
+            pattern = file.readline().rstrip()
+            text = file.readline().rstrip()
+            return pattern, text
+    else:
+        print("Invalid input type.")
+        return None, None
 
 def print_occurrences(output):
-    # this function should control output, it doesn't need any return
     print(' '.join(map(str, output)))
 
+def rabin_karp_algorithm(pattern, text):
+    p_len = len(pattern)
+    t_len = len(text)
+    prime = 101
+    mod = int(1e9 + 7)
+
+    pattern_hash = 0
+    text_hash = 0
+    power = 1
+
+    for i in range(p_len):
+        pattern_hash = (pattern_hash + (ord(pattern[i]) * power)) % mod
+        text_hash = (text_hash + (ord(text[i]) * power)) % mod
+        if i < p_len - 1:
+            power = (power * prime) % mod
+
+    positions = []
+
+    for i in range(t_len - p_len + 1):
+        if pattern_hash == text_hash:
+            if text[i:i + p_len] == pattern:
+                positions.append(i)
+
+        if i < t_len - p_len:
+            text_hash = (text_hash - (ord(text[i]) * power) + mod) % mod
+            text_hash = (text_hash * prime) % mod
+            text_hash = (text_hash + ord(text[i + p_len])) % mod
+
+    return positions
+
 def get_occurrences(pattern, text):
-    # this function should find the occurances using Rabin Karp alghoritm 
+    if pattern is None or text is None:
+        return []
 
-    # and return an iterable variable
-    return [0]
+    return rabin_karp_algorithm(pattern, text)
 
-
-# this part launches the functions
 if __name__ == '__main__':
     print_occurrences(get_occurrences(*read_input()))
-
